@@ -2,6 +2,8 @@ import json
 import csv
 import logging
 from typing import List
+
+import requests
 from vginsights_client import VGInsightsClient
 
 def flatten(l):
@@ -14,7 +16,10 @@ def save_to_file(data: List[object], file_type: str='csv', file_name: str = "out
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             writer.writeheader()
             for row in data:
-                writer.writerow(row)
+                try:
+                    writer.writerow(row)
+                except:
+                    continue
 
     elif file_type == 'json':
         with open(f'{file_name}.json', 'w') as f:
@@ -35,9 +40,12 @@ def get_all_game_stats_and_save():
     save_to_file(parsed_stats, file_type="csv")
     save_to_file(parsed_stats, file_type="json")
 
+def search_for_games_on_steam(title_includes: str):
+    steam_games = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json").json()
+    games = list(map(lambda x: x['appid'], filter( lambda x: title_includes in x['name'].lower(), steam_games['applist']['apps'])))
+    game_stats = list(filter(lambda x: x is not None, map(VGInsightsClient.get_game_stats_by_id, games)))
+    save_to_file(game_stats, file_type="json",file_name="unparsed_output")
+    return game_stats
+
 if __name__ == "__main__":
     get_all_game_stats_and_save()
-    # f = open('output.json')
-    # parsed_stats = json.load(f)
-    # save_to_file(parsed_stats, file_type="csv")
-    

@@ -1,4 +1,5 @@
 import logging
+import time
 import requests
 
 class VGInsightsClient:
@@ -18,6 +19,8 @@ class VGInsightsClient:
     
     @staticmethod
     def get_game_stats_by_id(game_id: str):
+        time.sleep(.25)
+        logging.info(f"Getting game stats: {game_id}")
         response = requests.get(
             f'https://vginsights.com/api/v1/game/{game_id}', 
             headers={
@@ -29,11 +32,16 @@ class VGInsightsClient:
                 'sec-ch-ua-platform': '"Windows"',
             }
         )
-        if not response.ok:
-            logging.error(response.text)
-            raise Exception("Something went wrong")
         
-        base_data = response.json()
+        if not response.ok:
+            logging.info(f"Throwing out bad response")
+            return None
+        
+        try:
+            base_data = response.json()
+        except:
+            logging.info(f"Throwing out bad response")
+            return None
 
         response = requests.get(
             f'https://vginsights.com/api/v1/game/{game_id}/quick-stats', 
@@ -46,9 +54,11 @@ class VGInsightsClient:
             'sec-ch-ua-platform': '"Windows"',
             }
         )
+        
         if not response.ok:
-            logging.error(response.text)
-            raise Exception("Something went wrong")
+            logging.info(f"Throwing out bad response")
+            return None
+
         return {
             **base_data,
             **response.json()
@@ -59,7 +69,7 @@ class VGInsightsClient:
         response = requests.get(
             'https://vginsights.com/api/v1/site-search', 
             params={
-            'q': game_name,
+                'q': game_name,
             }, 
             headers={
             'sec-ch-ua': '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"',
