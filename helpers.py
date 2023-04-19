@@ -35,7 +35,7 @@ def search_for_games_on_steam(tag: str, start: int = 0, end:int = None, vpn_swit
         # now get the stats for the game
         game = games[i]
         game_id = game['appid']
-        results = VGInsightsClient.get_game_stats_by_id(game_id)
+        results = VGInsightsClient.get_game_stats_by_id(game_id=game_id)
 
         # wait a random amount of time to help avoid getting flagged by bot detection right away
         print("Waiting...")
