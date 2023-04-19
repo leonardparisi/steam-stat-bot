@@ -1,3 +1,5 @@
 output.csv
 output.json
 __pycache__/*
+inputs.json
+settings_nordvpn*
