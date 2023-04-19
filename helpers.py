@@ -3,7 +3,6 @@ import json
 from typing import List
 import random
 import time
-from helpers import save_to_file
 from steam_client import SteamClient
 from vginsights_client import VGInsightsClient
 from nordvpn_switcher import initialize_VPN,rotate_VPN,terminate_VPN
@@ -16,7 +15,7 @@ def search_for_games_on_steam(tag: str, start: int = 0, end:int = None, vpn_swit
     
     # if 'end' is not specified, do the whole list of games 
     if end is None:
-        end = len(games)
+        end = len(games)-1
     # end early if we already finished going through the list of games 
     if end >= len(games):
         return

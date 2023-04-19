@@ -2,7 +2,7 @@
 
 ### Overview 
 
-This bot is meant to easily retrieve steam game statistics. 
+This bot is meant to easily retrieve statistics on a wide selection of steam games in bulk.
 
 ## Setup
 
